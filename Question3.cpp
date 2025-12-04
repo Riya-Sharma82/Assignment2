@@ -1,33 +1,72 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-int findMissingLinear(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        if (arr[i] != i + 1)
-            return i + 1;
+#define SIZE 100
+
+class Stack {
+    char arr[SIZE];
+    int top;
+public:
+    Stack() {
+        top = -1;
     }
-    return n;
+
+    void push(char c) {
+        if (top < SIZE - 1)
+            arr[++top] = c;
+    }
+
+    char pop() {
+        if (top == -1)
+            return '\0';
+        return arr[top--];
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+    
+    char peek() {
+        if (top == -1)
+            return '\0';
+        return arr[top];
+    }
+};
+
+bool isMatchingPair(char open, char close) {
+    if (open == '(' && close == ')') return true;
+    if (open == '[' && close == ']') return true;
+    if (open == '{' && close == '}') return true;
+    return false;
 }
 
-int findMissingBinary(int arr[], int n) {
-    int left = 0;
-    int right = n - 2;
-    while (left <= right) {
-        int mid = (left + right) / 2;
-        if (arr[mid] == mid + 1)
-            left = mid + 1;
-        else
-            right = mid - 1;
+bool isBalanced(string exp) {
+    Stack st;
+    for (int i = 0; i < exp.length(); i++) {
+        char c = exp[i];
+        if (c == '(' || c == '[' || c == '{')
+            st.push(c);
+        else if (c == ')' || c == ']' || c == '}') {
+            if (st.isEmpty())
+                return false;
+            char top = st.pop();
+            if (!isMatchingPair(top, c))
+                return false;
+        }
     }
-    return left + 1;
+    return st.isEmpty();
 }
 
 int main() {
-    int arr1[] = {1, 2, 3, 5, 6};
-    int n1 = 6;
+    string exp;
+    cout << "Enter an expression: ";
+    cin >> exp;
 
-    cout << "Missing (Linear): " << findMissingLinear(arr1, n1) << endl;
-    cout << "Missing (Binary): " << findMissingBinary(arr1, n1) << endl;
+    if (isBalanced(exp))
+        cout << "Balanced" << endl;
+    else
+        cout << "Not Balanced" << endl;
 
     return 0;
 }
