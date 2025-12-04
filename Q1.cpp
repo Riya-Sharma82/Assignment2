@@ -1,23 +1,23 @@
-#include <iostream>
+include <iostream>
 using namespace std;
 
 #define SIZE 5
 
-class CircularQueue {
+class Queue {
     int arr[SIZE];
     int front, rear;
 public:
-    CircularQueue() {
+    Queue() {
         front = -1;
         rear = -1;
     }
 
     bool isEmpty() {
-        return front == -1;
+        return front == -1 || front > rear;
     }
 
     bool isFull() {
-        return (front == 0 && rear == SIZE - 1) || (rear + 1 == front);
+        return rear == SIZE - 1;
     }
 
     void enqueue(int x) {
@@ -25,12 +25,9 @@ public:
             cout << "Queue Overflow" << endl;
             return;
         }
-        if (isEmpty()) {
-            front = rear = 0;
-        } else {
-            rear = (rear + 1) % SIZE;
-        }
-        arr[rear] = x;
+        if (front == -1)
+            front = 0;
+        arr[++rear] = x;
         cout << x << " enqueued" << endl;
     }
 
@@ -39,11 +36,9 @@ public:
             cout << "Queue Underflow" << endl;
             return;
         }
-        cout << arr[front] << " dequeued" << endl;
-        if (front == rear)
+        cout << arr[front++] << " dequeued" << endl;
+        if (front > rear)
             front = rear = -1;
-        else
-            front = (front + 1) % SIZE;
     }
 
     void peek() {
@@ -60,19 +55,14 @@ public:
             return;
         }
         cout << "Queue elements: ";
-        int i = front;
-        while (true) {
+        for (int i = front; i <= rear; i++)
             cout << arr[i] << " ";
-            if (i == rear)
-                break;
-            i = (i + 1) % SIZE;
-        }
         cout << endl;
     }
 };
 
 int main() {
-    CircularQueue q;
+    Queue q;
     int choice, val;
     while (true) {
         cout << "\n1.Enqueue\n2.Dequeue\n3.isEmpty\n4.isFull\n5.Display\n6.Peek\n7.Exit\nEnter choice: ";
@@ -111,4 +101,3 @@ int main() {
         }
     }
 }
-
